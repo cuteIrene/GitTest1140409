@@ -2,53 +2,58 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>點擊小方塊遊戲</title>
+    <title>點擊小魚遊戲</title>
     <style>
         body {
             text-align: center;
             margin-top: 50px;
             font-family: Arial, sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
         }
-        #box {
-            width: 50px;
-            height: 50px;
-            background-color: tomato;
+        #fish {
+            width: 80px;
+            height: 80px;
+            background-image: url('https://pngimg.com/uploads/fish/fish_PNG1151.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             position: absolute;
             top: 100px;
             left: 100px;
             cursor: pointer;
         }
+        h1, p {
+            text-shadow: 1px 1px 4px #000;
+        }
     </style>
 </head>
 <body>
 
-
-    <h1>點擊紅色小方塊！</h1>
-    <p>試試看你能點到幾次～</p>
-    <div id="box"></div>
-
+    <h1>點擊小魚🐟！</h1>
+    <p>看看你能抓到幾隻魚～</p>
+    <div id="fish"></div>
 
     <p>得分：<span id="score">0</span></p>
 
-
     <script>
-        const box = document.getElementById('box');
+        const fish = document.getElementById('fish');
         const scoreDisplay = document.getElementById('score');
         let score = 0;
 
-
-        box.addEventListener('click', () => {
+        fish.addEventListener('click', () => {
             score++;
             scoreDisplay.textContent = score;
-            // 每次被點到就移動到隨機位置
-            box.style.top = Math.random() * (window.innerHeight - 60) + 'px';
-            box.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+            fish.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+            fish.style.left = Math.random() * (window.innerWidth - 100) + 'px';
         });
     </script>
 
-
 </body>
 </html>
-
-
-
