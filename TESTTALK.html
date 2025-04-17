@@ -5,39 +5,86 @@
     <title>小聊天室</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(to bottom, #ffd1dc, #ffe7ba, #fff5e1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+
         #messages {
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             height: 300px;
             overflow-y: scroll;
             padding: 10px;
+            margin: 10px 0;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
             margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ffafbd;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff85a2;
         }
     </style>
 </head>
 <body>
 
+    <div class="chat-container">
+        <h1>☁️ 小聊天室 ☀️</h1>
 
-    <h1>簡易聊天室</h1>
+        <div>
+            名字：
+            <input type="text" id="username" placeholder="輸入你的名字">
+        </div>
 
+        <div id="messages"></div>
 
-    <div>
-        名字：<input type="text" id="username" placeholder="輸入你的名字">
+        <input type="text" id="input" placeholder="輸入訊息...">
+        <button onclick="sendMessage()">送出</button>
     </div>
-    <div id="messages"></div>
-
-
-    <input type="text" id="input" placeholder="輸入訊息...">
-    <button onclick="sendMessage()">送出</button>
-
 
     <script>
         const messages = document.getElementById('messages');
         const input = document.getElementById('input');
         const username = document.getElementById('username');
-
 
         function sendMessage() {
             if (input.value.trim() === '' || username.value.trim() === '') {
@@ -53,9 +100,5 @@
         }
     </script>
 
-
 </body>
 </html>
-
-
-
