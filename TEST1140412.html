@@ -74,6 +74,34 @@
             border-radius: 2px;
             background: linear-gradient(to right, #e0a899, #f8d0c3);
         }
+        .nav-buttons {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    display: flex;
+    gap: 5px;
+}
+
+.nav-buttons a {
+    background-color: #ffffffdd;
+    color: #b35446;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid #e6bdb0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.nav-buttons a:hover {
+    background-color: #fbeee6;
+    color: #c0392b;
+    border-color: #f4c4b7;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+        
     </style>
 </head>
 <body>
@@ -81,6 +109,15 @@
     <div class="section header">
         <h1>美好美容工作室</h1>
         <h2>專業撥筋放鬆 | 自然霧眉設計 | 深層全身調理</h2>
+        <div class="section header">
+            <div class="nav-buttons">
+                <a href="#courses">課程資訊</a>
+                <a href="#discounts">多堂優惠</a>
+                <a href="#booking">預約時間</a>
+                <a href="#check-booking">查詢預約</a>
+                <a href="#remaining">查詢剩餘課堂數</a>
+            </div>
+        </div>
     </div>
 
     <div class="section booking">
