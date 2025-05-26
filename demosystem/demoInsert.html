@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>簡單表單</title>
+</head>
+<body>
+  <h2>客戶新增表單</h2>
+
+  <label for="name">姓名：</label>
+  <input type="text" id="name" >
+
+  <label for="cname">性別：</label>
+  <select id="cname">
+    <option value="male">男</option>
+    <option value="female">女</option>
+  </select>
+
+  <label for="phone">電話：</label>
+  <input type="text" id="phone" >
+<br><br>
+
+  <label>生日：</label>
+  <select id="birthYear"></select> 年
+  <select id="birthMonth">
+    <option value="01">01</option>
+    <option value="02">02</option>
+    <option value="03">03</option>
+    <option value="04">04</option>
+    <option value="05">05</option>
+    <option value="06">06</option>
+    <option value="07">07</option>
+    <option value="08">08</option>
+    <option value="09">09</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+  </select> 月
+  <select id="birthDay"></select>
+   
+<br><br>
+  <label for="contact">緊急聯絡人：</label>
+  <input type="text" id="contact" >
+
+  <label for="conphone">緊急聯絡人電話：</label>
+  <input type="text" id="conphone" >
+
+  <button onclick="insertpost()">新增</button>
+
+  <script data-dynamic>
+  // 填年份選單
+  const yearSelect = document.getElementById("birthYear");
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear; y >= 1950; y--) {
+    const opt = document.createElement("option");
+    opt.value = y;
+    opt.textContent = y;
+    yearSelect.appendChild(opt);
+  }
+
+  // 填日期選單
+  const daySelect = document.getElementById("birthDay");
+  for (let d = 1; d <= 31; d++) {
+    const padded = d.toString().padStart(2, '0');
+    const opt = document.createElement("option");
+    opt.value = padded;
+    opt.textContent = padded;
+    daySelect.appendChild(opt);
+  }
+
+  // 你原本的 insertpost 也可以放這裡
+  function insertpost() {
+    const name = document.getElementById("name").value;
+    const gender = document.getElementById("cname").value;
+    const phone = document.getElementById("phone").value;
+    const birth = `${document.getElementById("birthYear").value}-${document.getElementById("birthMonth").value}-${document.getElementById("birthDay").value}`;
+    const contact = document.getElementById("contact").value;
+    const conphone = document.getElementById("conphone").value;
+
+    if (name) {
+      fetch("http://localhost:8000/api/2/insert", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          table: "memberinfo",
+          name,
+          gender,
+          phone,
+          birth,
+          contact,
+          conphone
+        })
+      }).then(() => alert("新增成功！"));
+    } else {
+      alert("請輸入資料");
+    }
+  }
+</script>
+</body>
+</html>
