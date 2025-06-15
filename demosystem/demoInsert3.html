@@ -1,141 +1,210 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>簡單表單</title>
+  <meta charset="UTF-8" />
+  <title>預約頁面</title>
+  <style>
+    body {
+      background-color: #fffaf5;
+      font-family: 'Helvetica Neue', sans-serif;
+      color: #5e4c3a;
+      padding: 30px;
+    }
+    h2 {
+      color: #a67c52;
+    }
+    form {
+      background-color: #fdf6ee;
+      padding: 20px;
+      border: 1px solid #e0c8b0;
+      border-radius: 10px;
+      max-width: 420px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #d8c2a9;
+      border-radius: 5px;
+      background-color: #fffaf3;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #d2b48c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #bfa27d;
+    }
+    #result {
+      margin-top: 30px;
+    }
+  </style>
 </head>
 <body>
-  <h2>預約課程表單</h2>
+  <h2>預約頁面</h2>
+  <form id="checkForm">
+    <label for="name">姓名：</label>
+    <input type="text" id="name" required />
+    <label for="phone">電話：</label>
+    <input type="text" id="phone" required />
+    <button type="submit">下一步</button>
+  </form>
 
-  <label for="cname">預約課程：</label>
-  <select id="cname"></select>
-
-  <br><br>
-
-  <label for="rdate">預約日期：</label>
-  <input type="date" id="rdate">
-
-  <label for="rhour">預約時間：</label>
-  <select id="rhour">
-    <option value="">請選擇時間</option>
-    <option value="10:00">10:00</option>
-    <option value="11:00">11:00</option>
-    <option value="12:00">12:00</option>
-    <option value="13:00">13:00</option>
-    <option value="14:00">14:00</option>
-    <option value="15:00">15:00</option>
-    <option value="16:00">16:00</option>
-    <option value="17:00">17:00</option>
-    <option value="18:00">18:00</option>
-  </select>
-
-  <!-- 隱藏 input 組合日期時間字串 -->
-  <input type="hidden" id="rtime">
-
-  <br><br>
-
-  <label for="bname">美容師：</label>
-  <select id="bname"></select>
-
-  <br><br>
-
-  <button onclick="insertpost()">新增</button>
+  <div id="result"></div>
 
   <script>
-    const apiCustomer = 'http://localhost:8000/api/1/customers';
-    const apiReserve = 'http://localhost:8000/api/1/orders';
-    const apiProducts = 'http://localhost:8000/api/1/products';
-    const apiPromote = 'http://localhost:8000/api/1/promote';
-    const apiCome = 'http://localhost:8000/api/1/come';
-    const apiBeautician = 'http://localhost:8000/api/1/beautician';
+    const form = document.getElementById("checkForm");
+    const resultDiv = document.getElementById("result");
+    let customerID = null;
+    let courseList = [];
+    let employeeList = [];
 
-    const cname = document.getElementById("cname");
-    const bname = document.getElementById("bname");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-    async function cnameAdd() {
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
       try {
-        const resp = await fetch(apiProducts);
-        const data = await resp.json();
-        data.forEach(row => {
-          let op = document.createElement("option");
-          op.value = row["idPriceList"];
-          op.textContent = row["Course_name"];
-          cname.append(op);
+        const response = await fetch("http://localhost:8000/check-member", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, phone })
         });
-      } catch (err) {
-        console.error("載入課程錯誤", err);
+
+        if (!response.ok) throw new Error("伺服器錯誤：" + response.status);
+        const data = await response.json();
+
+        if (data.isMember && data.idmemberinfo) {
+          customerID = data.idmemberinfo;
+          await loadCourseList();
+          await loadEmployeeList();
+          renderReservationForm(name);
+        } else {
+          alert("請先新增會員");
+          if (confirm("是否前往新增會員頁面？")) {
+            window.location.href = "sidebar.html?target=demoInsert.html";
+          }
+        }
+      } catch (error) {
+        console.error("發生錯誤：", error);
+        resultDiv.textContent = "伺服器錯誤，請稍後再試。";
+      }
+    });
+
+    async function loadCourseList() {
+      const res = await fetch("http://localhost:8000/api/1/products");
+      if (!res.ok) throw new Error("無法取得服務清單");
+      courseList = await res.json();
+    }
+
+    async function loadEmployeeList() {
+      const res = await fetch("http://localhost:8000/api/1/beautician");
+      if (!res.ok) throw new Error("無法取得美容師清單");
+      employeeList = await res.json();
+    }
+
+    function renderReservationForm(name) {
+      
+      const courseOptions = courseList.map(
+        item => `<option value="${item.idPriceList}">${item.Course_name}</option>`
+      ).join("");
+
+      const beauticianOptions = employeeList.map(
+        emp => `<option value="${emp.idemployee}">${emp.employee_name}</option>`
+      ).join("");
+
+      resultDiv.innerHTML = `
+        <form id="reservationForm">
+          <p><strong>歡迎回來，${name}！請繼續預約：</strong></p>
+          <label for="dateTime">日期與時間：</label>
+          <input type="datetime-local" id="dateTime" required />
+          <label for="service">服務項目：</label>
+          <select id="service" required>
+            <option value="">請選擇服務</option>
+            ${courseOptions}
+          </select>
+          <label for="beautician">指定美容師（可選）：</label>
+          <select id="beautician">
+            <option value="">不指定</option>
+            ${beauticianOptions}
+          </select>
+          <button type="submit">送出預約</button>
+        </form>
+      `;
+
+      document.getElementById("reservationForm").addEventListener("submit", submitReservation);
+    }
+
+    async function submitReservation(event) {
+      event.preventDefault();
+
+      const courseID = document.getElementById("service").value;
+      const selectedCourse = courseList.find(c => c.idPriceList == courseID)?.Course_name || "";
+      let dateTime = document.getElementById("dateTime").value;
+      const beautician = document.getElementById("beautician").value;
+      const selectedBeautician = beautician
+        ? employeeList.find(e => e.idemployee == beautician)?.employee_name || "不指定"
+        : "不指定";
+
+      if (dateTime.length === 16) {
+        dateTime = dateTime.replace("T", " ") + ":00";
+      }
+
+      const reservationData = {
+        table: "reservation",
+        Customer_ID: customerID,
+        Course_ID: courseID,
+        DateTime: dateTime,
+        Beautician: beautician || null,
+        state: "0"
+      };
+
+      try {
+        const response = await fetch("http://localhost:8000/api/2/insert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(reservationData)
+        });
+
+        if (!response.ok) throw new Error("預約失敗");
+
+        // 安全解析 JSON（有可能回傳空）
+        let resultText = await response.text();
+        let result = {};
+        try {
+          result = JSON.parse(resultText || "{}");
+        } catch (e) {
+          console.warn("回傳不是合法 JSON，但已成功送出");
+        }
+
+        resultDiv.innerHTML = `
+          <div style="padding: 20px; border: 2px solid #d2b48c; background-color: #fdf6ee; color: #5e4c3a; border-radius: 12px; max-width: 420px; box-shadow: 2px 2px 10px rgba(0,0,0,0.05);">
+            <h3 style="margin-top: 0;">✨ 預約成功 ✨</h3>
+            <p><strong>服務項目：</strong> ${selectedCourse}</p>
+            <p><strong>預約時間：</strong> ${dateTime}</p>
+            <p><strong>指定美容師：</strong> ${selectedBeautician}</p>
+            <button onclick="location.reload()" 
+              style="margin-top: 15px; padding: 8px 16px; background-color: #d2b48c; color: white; border: none; border-radius: 6px; cursor: pointer;">
+              再預約一次
+            </button>
+          </div>
+        `;
+      } catch (error) {
+        console.error("預約錯誤：", error);
+        alert("預約失敗，請稍後再試");
       }
     }
-    cnameAdd();
 
-    async function bnameAdd() {
-      try {
-        const resp = await fetch(apiBeautician);
-        const data = await resp.json();
-        data.forEach(row => {
-          let op = document.createElement("option");
-          op.value = row["idemployee"];
-          op.textContent = row["employee_name"];
-          bname.append(op);
-        });
-      } catch (err) {
-        console.error("載入美容師錯誤", err);
-      }
-    }
-    bnameAdd();
-
-    function padZero(num) {
-  return num.toString().padStart(2, '0');//讓月份如果只有一位數的會補0:3->03
-}
-
-function insertpost() {
-  let course = document.getElementById("cname").value;
-  let date = document.getElementById("rdate").value;
-  let time = document.getElementById("rhour").value;
-  let beautician = document.getElementById("bname").value;
-
-  if (!course || !date || !time || !beautician) {
-    alert("請填寫完整的預約資訊");
-    return;
-  }
-
-  // 將日期與時間合併為 DATETIME 格式：yyyy-MM-dd HH:mm:ss
-  let dateObj = new Date(date); //選到的字串轉成 JavaScript 的 Date 物件
-  let yyyy = dateObj.getFullYear(); //取出年份 
-  let mm = padZero(dateObj.getMonth() + 1); //getMonth() 回傳是 0 到 11所以要加 1 變正常月份，並確保是兩位數
-  let dd = padZero(dateObj.getDate());//取出日期，並補零
-
-  let hhmm = time.split(':');//把 <select> 中的時間值拆成兩部分：
-  let hh = padZero(hhmm[0]);//分別補零，確保小時、分鐘都是兩位數
-  let min = padZero(hhmm[1]);
-
-  // 秒數固定為00
-  let rtime = `${yyyy}-${mm}-${dd} ${hh}:${min}:00`;
-  document.getElementById("rtime").value = rtime;
-
-  fetch('http://localhost:8000/api/2/insert', {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      table: "pricelist",
-      cname: course,
-      rtime: rtime,
-      bname: beautician
-    })
-  }).then(resp => {
-    if (resp.ok) {
-      alert("預約成功！");
-    } else {
-      alert("預約失敗！");
-    }
-  }).catch(err => {
-    console.error("新增錯誤", err);
-    alert("發生錯誤，請稍後再試");
-  });
-}
   </script>
 </body>
 </html>

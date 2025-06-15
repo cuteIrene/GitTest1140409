@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <title>資料操作</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+
+
+        .tab-btn {
+            margin-right: 10px;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #0078D4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+
+        th {
+            background-color: #e54f4f;
+            color: white;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+  <h1>資料表操作</h1>
+  <div>
+    <button class="tab-btn" onclick="loadTable(apiCustomer, container1);">顧客資料</button>
+    <button class="tab-btn" onclick="loadTable(apiReserve, container1);">預約資料</button>
+    <button class="tab-btn" onclick="loadTable(apiProducts, container1);">課程資料</button>
+    <button class="tab-btn" onclick="loadTable(apiPromote, container1);">多堂優惠資料</button>
+    <button class="tab-btn" onclick="loadTable(apiCome, container1);">實際到店資料</button>
+    <button class="tab-btn" onclick="loadTable(apiBeautician, container1);">美容師資料</button>
+  </div>
+  <div>
+    <div id="tableContainer" >載入中…</div>
+  </div>
+
+  <script>
+    //const apiUrl2 = 'http://localhost:8000/api/hello';
+    const apiCustomer = 'http://localhost:8000/api/1/customers';
+    const apiReserve = 'http://localhost:8000/api/1/orders';
+    const apiProducts = 'http://localhost:8000/api/1/products';
+    const apiPromote = 'http://localhost:8000/api/1/promote';
+    const apiCome = 'http://localhost:8000/api/1/come';
+    const apiBeautician = 'http://localhost:8000/api/1/beautician';
+    
+    const container1 = document.getElementById('tableContainer');
+
+    let currenturl = ''
+    let currenttodiv=container1
+        //1. 讀取資料fetch        固定url -> 不固定
+        //2. 產生table html  (jsondata+table混合產生)
+        //3. 顯示table到指定div   固定element -> 不固定
+
+   
+    async function loadTable(url, todiv) {
+    try {
+        currenturl = url;
+        currenttodiv = todiv;
+
+        let tablename = '';
+        switch (url) {
+            case apiCustomer:
+                tablename = 'memberinfo';
+                break;
+            case apiReserve:
+                tablename = 'reservation';
+                break;
+            case apiProducts:
+                tablename = 'pricelist';
+                break;
+            case apiPromote:
+                tablename = 'promotion';
+                break;
+            case apiCome:
+                tablename = 'actual';
+                break;
+            case apiBeautician:
+                tablename = 'employee';
+                break;
+        }
+
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP 錯誤: ${resp.status}`);
+        const data = await resp.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+            todiv.textContent = '沒有資料';
+            return;
+        }
+
+        let table = '<table><thead><tr>';
+        table += '<th>操作</th>';
+        const keys = Object.keys(data[0]);
+        keys.forEach(k => {
+            table += `<th>${k}</th>`;
+        });
+        table += '</tr></thead><tbody>';
+
+        data.forEach(row => {
+            const x = JSON.stringify({ ...row, state: -1, table: tablename });
+            table += '<tr>';
+            table += `<td><button onclick='updaterow(${x})'>刪除</button></td>`;
+            keys.forEach(k => {
+                table += `<td>${row[k]}</td>`;
+            });
+            table += '</tr>';
+        });
+
+        table += '</tbody></table>';
+        todiv.innerHTML = table;
+    } catch (err) {
+        todiv.textContent = '載入失敗：' + err.message;
+    }
+}
+
+        //loadtable * 2
+        //showtab()
+        function updaterow(returnbody) {
+            console.log(returnbody)
+
+
+            fetch('http://localhost:8000/api/2/update', {
+                method: 'POST',
+                mode: 'cors', // ✅ 很關鍵
+                body: JSON.stringify(returnbody),
+            })
+
+
+            loadTable(currenturl, currenttodiv)
+        }
+    </script>
+
+</body>
+</html>
