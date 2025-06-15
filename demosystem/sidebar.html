@@ -1,204 +1,255 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>響應式 SPA 導覽頁</title>
-    
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>美好工作室系統</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        body {
-            margin: 0;
-            font-family: "Segoe UI", sans-serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+    body {
+      margin: 0;
+      font-family: "Noto Serif TC", serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #fffaf5; /* 奶茶白底 */
+      color: #5a3e36;
+    }
 
+    /* 🍑 溫柔 Sidebar */
+    .sidebar {
+  width: 240px;
+  background-color: #fceae8; /* 蜜桃粉 */
+  color: #5a3e36;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease-in-out;
+  border-right: 2px dashed #f8c8c4;
+  box-shadow: 2px 0 8px rgba(248, 200, 200, 0.2);
+}
 
-        .sidebar {
-            width: 240px;
-            background-color: #2c3e50;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease-in-out;
-        }
+.sidebar h2 {
+  text-align: center;
+  margin: 30px 0 15px;
+  font-size: 20px;
+  color: #d08080;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
 
+/* 🌸 可愛少女風按鈕 */
+.sidebar {
+  width: 240px;
+  background-color: #f5ede4; /* 奶茶米色 */
+  color: #5a3e36;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease-in-out;
+  border-right: 1px solid #e0d4c5;
+  box-shadow: 2px 0 6px rgba(180, 150, 120, 0.1);
+}
 
-        .sidebar h2 {
-            text-align: center;
-            margin: 20px 0;
-        }
+.sidebar h2 {
+  text-align: center;
+  margin: 30px 0 15px;
+  font-size: 20px;
+  color: #7c5948; /* 木質褐 */
+  font-weight: bold;
+  letter-spacing: 1px;
+}
 
+/* 🌿 柔色按鈕 */
+.sidebar a {
+  padding: 12px 18px;
+  margin: 6px 16px;
+  text-decoration: none;
+  background-color: #f8f3ef; /* 奶白 */
+  color: #5a3e36;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(200, 180, 160, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-        .sidebar a {
-            padding: 15px 20px;
-            text-decoration: none;
-            color: white;
-            transition: background 0.2s;
-        }
+.sidebar a:hover {
+  background: #ece1d6; /* 柔粉米 */
+  color: #a15d4c; /* 摩卡偏粉 */
+  box-shadow: 0 2px 5px rgba(190, 160, 140, 0.2);
+  transform: translateX(3px);
+}
 
+/* ☰ 漢堡按鈕（低彩柔和） */
+.hamburger {
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #a07664;
+  z-index: 10;
+}
+    /* 📄 主內容區 */
+    .content {
+      flex: 1;
+      padding: 40px 30px 60px;
+      overflow-y: auto;
+      background-color: #fffaf5;
+    }
 
-        .sidebar a:hover {
-            background: #34495e;
-        }
+    .content h1 {
+      margin-top: 0;
+      font-size: 26px;
+      color: #8d5a4d;
+    }
 
+    .content h2 {
+      font-size: 22px;
+      margin-top: 10px;
+      margin-bottom: 30px;
+      text-align: center;
+      color: #5a3e36;
+    }
 
-        .content {
-            flex: 1;
-            padding: 0;
-            overflow-y: auto;
-        }
+    /* 🖼️ 圖片區 */
+    .centered {
+      text-align: center;
+    }
 
+    .image-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-        .hamburger {
-            display: none;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 24px;
-            background: none;
-            border: none;
-            color: #2c3e50;
-            z-index: 10;
-        }
+    img {
+      width: 100%;
+      height: auto;
+      cursor: zoom-in;
+      transition: transform 0.2s;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
 
+    img:hover {
+      transform: scale(1.03);
+    }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                height: 100vh;
-                z-index: 5;
-                transform: translateX(-100%);
-            }
+    /* ☰ 漢堡按鈕 */
+    .hamburger {
+      display: none;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #8d5a4d;
+      z-index: 10;
+    }
 
+    /* 📱 手機版響應 */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        height: 100vh;
+        z-index: 5;
+        transform: translateX(-100%);
+      }
 
-            .sidebar.active {
-                transform: translateX(0);
-            }
+      .sidebar.active {
+        transform: translateX(0);
+      }
 
-
-            .hamburger {
-                display: block;
-            }
-        }
-    </style>
+      .hamburger {
+        display: block;
+      }
+    }
+  </style>
 </head>
 
-
 <body>
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
 
+  <div class="sidebar" id="sidebar">
+    <h2>功能選單</h2>
+    <a href="sidebar.html?target=courses-content.html">課程資訊</a>
+    <a href="sidebar.html?target=promotion.html">多堂優惠</a>
+    <a href="sidebar.html?target=demoInsert.html">會員新增單</a>
+    <a href="sidebar.html?target=demoInsert2.html">產品新增單</a>
+    <a href="sidebar.html?target=demoInsert3.html">預約表單</a>
+    <a href="sidebar.html?target=demoAPI2.html">🔍資料異動</a>
+  </div>
 
-    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+  <div class="content" id="mainContent">
+    <h1>歡迎來到美好工作室</h1>
+    <p>請從左側選單選擇功能</p>
+  </div>
 
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
 
-    <div class="sidebar" id="sidebar">
-        <h2>功能選單</h2>
-<a href="sidebar.html?target=courses-content.html">📝 課程資訊</a>
-<a href="sidebar.html?target=promotion.html">📝 多堂優惠</a>         
-<a href="sidebar.html?target=demoInsert.html">📝 會員新增單</a>      
-<a href="sidebar.html?target=demoInsert2.html">📝 產品新增單</a>
-<a href="sidebar.html?target=demoInsert3.html">📝 預約表單</a>
-<a href="sidebar.html?target=demoAPI2.html">🔍 資料異動</a>
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
 
+    async function loadPage(fileName) {
+      try {
+        const response = await fetch(fileName);
+        if (!response.ok) throw new Error('載入失敗');
+        const html = await response.text();
 
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const content = document.getElementById('mainContent');
+        content.innerHTML = '';
 
+        // 移除舊 script（標記為 data-dynamic 的）
+        document.querySelectorAll('script[data-dynamic]').forEach(s => s.remove());
 
-
-    </div>
-
-
-    <div class="content" id="mainContent">
-        <h1>歡迎使用系統</h1>
-        <p>請從左側選單選擇功能。</p>
-    </div>
-
-
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-
-        function getQueryParam(name) {
-            const params = new URLSearchParams(window.location.search);
-            return params.get(name);
-        }
-
-
-        async function loadPage(fileName) {
-            try {
-                const response = await fetch(fileName);
-                if (!response.ok) throw new Error('載入失敗');
-                const html = await response.text();
-
-
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
-
-                const content = document.getElementById('mainContent');
-                content.innerHTML = '';
-
-
-                // 移除舊 script（標記為 data-dynamic 的）
-                document.querySelectorAll('script[data-dynamic]').forEach(s => s.remove());
-
-
-                // 插入非 script 元素
-                Array.from(doc.body.childNodes).forEach(node => {
-                    if (node.tagName !== 'SCRIPT') {
-                        content.appendChild(document.importNode(node, true));
-                    }
-                });
-
-
-                // 等 DOM 實際插入後，再動態掛載 script
-                const scripts = doc.querySelectorAll('script');
-                scripts.forEach(oldScript => {
-                    const newScript = document.createElement('script');
-                    if (oldScript.src) {
-                        newScript.src = oldScript.src;
-                    } else {
-                        newScript.textContent = oldScript.textContent;
-                    }
-                    newScript.setAttribute('data-dynamic', 'true');
-                    // 注意：不是加到 document.body，而是 mainContent 內！
-                    // 這樣才保證 DOM 存在再執行（尤其是 document.getElementById）
-                    content.appendChild(newScript);
-                });
-
-
-                if (window.innerWidth <= 768) toggleSidebar(); // 手機收 sidebar
-            } catch (err) {
-                document.getElementById('mainContent').innerHTML =
-                    `<p style="color:red;">⚠ 無法載入 ${fileName}：${err.message}</p>`;
-            }
-        }
-
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const target = getQueryParam('target');
-            if (target) {
-            loadPage(target);
-        }
+        // 插入非 script 元素
+        Array.from(doc.body.childNodes).forEach(node => {
+          if (node.tagName !== 'SCRIPT') {
+            content.appendChild(document.importNode(node, true));
+          }
         });
 
+        // 插入 script
+        const scripts = doc.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+          const newScript = document.createElement('script');
+          if (oldScript.src) {
+            newScript.src = oldScript.src;
+          } else {
+            newScript.textContent = oldScript.textContent;
+          }
+          newScript.setAttribute('data-dynamic', 'true');
+          content.appendChild(newScript);
+        });
 
-    </script>
+        if (window.innerWidth <= 768) toggleSidebar(); // 手機收 sidebar
+      } catch (err) {
+        document.getElementById('mainContent').innerHTML =
+          `<p style="color:red;">⚠ 無法載入 ${fileName}：${err.message}</p>`;
+      }
+    }
 
-
-
-
+    window.addEventListener('DOMContentLoaded', () => {
+      const target = getQueryParam('target');
+      if (target) {
+        loadPage(target);
+      }
+    });
+  </script>
 </body>
-
-
 </html>
-
