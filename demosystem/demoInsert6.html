@@ -1,0 +1,292 @@
+<h2>實際來店登記</h2>
+
+<div>
+  <h3>查詢會員</h3>
+  <form id="searchMemberForm">
+    <label>姓名：<input type="text" name="name" required></label>
+    <label>電話：<input type="tel" name="phone" required></label>
+    <button type="submit">查詢會員</button>
+  </form>
+</div>
+
+<div id="memberSection" style="display:none; margin-top:20px;">
+  <h3>會員資料</h3>
+  <p id="memberInfo"></p>
+
+  <h4>尚未到店的預約</h4>
+  <select id="reservationSelect">
+    <option value="">-- 請選擇預約 --</option>
+  </select>
+
+  <h4>或手動選擇項目</h4>
+  <select id="courseSelect">
+    <option value="">-- 請選擇課程 --</option>
+  </select>
+
+  <form id="actualForm" style="margin-top:20px;">
+    <label>來店時間：
+      <input type="datetime-local" id="actualDateTime" required>
+    </label><br><br>
+
+    <label>項目：
+      <input type="text" id="actualCourseName" readonly required>
+    </label><br><br>
+
+    <label>價格：
+      <input type="number" id="actualPrice" min="0" required>
+    </label><br><br>
+
+    <button type="submit">送出實際消費紀錄</button>
+  </form>
+</div>
+
+<div id="addMemberSection" style="display:none; margin-top:20px;">
+  <h3>新增會員</h3>
+  <form id="addMemberForm">
+    <label>姓名：<input type="text" name="name" required></label><br><br>
+    <label>電話：<input type="tel" name="phone" required></label><br><br>
+    <button type="submit">新增會員</button>
+  </form>
+</div>
+
+<div id="msgBox" style="margin-top:20px; color:red;"></div>
+
+<script>
+const memberSection = document.getElementById('memberSection');
+const addMemberSection = document.getElementById('addMemberSection');
+const msgBox = document.getElementById('msgBox');
+const memberInfo = document.getElementById('memberInfo');
+const reservationSelect = document.getElementById('reservationSelect');
+const courseSelect = document.getElementById('courseSelect');
+const actualCourseName = document.getElementById('actualCourseName');
+const actualPrice = document.getElementById('actualPrice');
+const actualDateTime = document.getElementById('actualDateTime');
+
+let currentMemberId = null;
+let reservations = [];
+let courses = [];
+
+// 設定預設來店時間為現在
+function setDefaultDateTime() {
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0,16);
+  actualDateTime.value = local;
+}
+
+// 讀取課程列表
+async function loadCourses() {
+  try {
+    const res = await fetch('http://localhost:8000/api/1/products');
+    if (!res.ok) throw new Error('讀取課程失敗');
+    courses = await res.json();
+    courseSelect.innerHTML = '<option value="">-- 請選擇課程 --</option>';
+    courses.forEach(c => {
+      courseSelect.innerHTML += `<option value="${c.idPriceList}" data-name="${c.Course_name}" data-price="${c.Course_price}">${c.Course_name} - $${c.Course_price}</option>`;
+    });
+  } catch(e) {
+    msgBox.textContent = e.message;
+  }
+}
+
+// 當課程選擇改變時，自動填入名稱與價格
+courseSelect.addEventListener('change', () => {
+  const selected = courseSelect.selectedOptions[0];
+  if(selected && selected.value) {
+    actualCourseName.value = selected.dataset.name;
+    actualPrice.value = selected.dataset.price;
+    // 清空預約選擇避免衝突
+    reservationSelect.value = "";
+  } else {
+    actualCourseName.value = "";
+    actualPrice.value = "";
+  }
+});
+
+// 預約選擇改變時帶入課程名稱，價格由前端員工填
+reservationSelect.addEventListener('change', () => {
+  const val = reservationSelect.value;
+  if (!val) {
+    actualCourseName.value = "";
+    actualPrice.value = "";
+    return;
+  }
+
+  const resv = reservations.find(r => Number(r.idReservation) === Number(val));
+  console.log("預約資料:", reservations);
+
+  if (resv) {
+    actualCourseName.value = resv.Course_name || "";
+    actualPrice.value = resv.Course_price || "";
+    courseSelect.value = "";
+  } else {
+    console.warn("找不到對應的預約資料");
+    msgBox.textContent = "預約資料錯誤，請重新選擇";
+  }
+});
+
+// 查會員表單送出
+document.getElementById('searchMemberForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  msgBox.textContent = "";
+  memberSection.style.display = "none";
+  addMemberSection.style.display = "none";
+  currentMemberId = null;
+
+  const form = e.target;
+  const name = form.name.value.trim();
+  const phone = form.phone.value.trim();
+
+  if (!name || !phone) {
+    msgBox.textContent = "請輸入姓名與電話";
+    return;
+  }
+
+  try {
+    // 查會員
+    let res = await fetch('http://localhost:8000/check-member', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({name, phone})
+    });
+    let data = await res.json();
+    if (!data.isMember) {
+       alert(`查無會員：${name}，請先新增會員`);
+       addMemberSection.style.display = "block";
+       return;
+    }
+    currentMemberId = data.idmemberinfo;
+    memberInfo.textContent = `會員ID: ${currentMemberId}，姓名: ${name}，電話: ${phone}`;
+
+    await loadCourses();
+
+    // 查預約
+    res = await fetch('http://localhost:8000/api/2/check-reservation', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({name, phone})
+    });
+    reservations = await res.json();
+    reservationSelect.innerHTML = '<option value="">-- 請選擇預約 --</option>';
+    if (reservations.length > 0) {
+      reservations.forEach(r => {
+        const matchedCourse = courses.find(c => Number(c.idPriceList) === Number(r.Course_ID));
+        const name = matchedCourse ? matchedCourse.Course_name : '未知課程';
+        const price = matchedCourse ? matchedCourse.Course_price : '';
+
+        reservationSelect.innerHTML += `<option value="${r.idReservation}" data-course="${name}" data-price="${price}" data-courseid="${r.Course_ID}">${r.DateTime} - ${name}</option>`;
+      });
+    } else {
+      reservationSelect.innerHTML += `<option disabled>無預約</option>`;
+    }
+    // 顯示表單
+    memberSection.style.display = "block";
+    setDefaultDateTime();
+  } catch (e) {
+    msgBox.textContent = "查詢發生錯誤: " + e.message;
+  }
+});
+
+// 新增會員表單送出
+document.getElementById('addMemberForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  msgBox.textContent = "";
+
+  const form = e.target;
+  const name = form.name.value.trim();
+  const phone = form.phone.value.trim();
+
+  try {
+    let res = await fetch('http://localhost:8000/api/2/insert-member', {  // 假設你有新增會員API
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({name, phone})
+    });
+    if (!res.ok) throw new Error('新增會員失敗');
+    let data = await res.json();
+    currentMemberId = data.idmemberinfo; // 假設API回傳新增會員id
+    memberInfo.textContent = `會員新增成功！會員ID: ${currentMemberId}，姓名: ${name}，電話: ${phone}`;
+    addMemberSection.style.display = "none";
+    memberSection.style.display = "block";
+
+    // 預約清單空，讓員工可手動選擇項目
+    reservationSelect.innerHTML = '<option disabled>無預約</option>';
+    courseSelect.selectedIndex = 0;
+    setDefaultDateTime();
+  } catch (e) {
+    msgBox.textContent = "新增會員失敗：" + e.message;
+  }
+});
+
+// 實際來店表單送出
+document.getElementById('actualForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  msgBox.textContent = "";
+
+  if (!currentMemberId) {
+    msgBox.textContent = "請先查詢或新增會員";
+    return;
+  }
+
+  let dateTime = actualDateTime.value;  // 例如 "2025-06-20T14:30"
+  // 把 T 換空白，補上秒數
+  dateTime = dateTime.replace("T", " ") + ":00"; // 變成 "2025-06-20 14:30:00"
+
+  const price = Number(actualPrice.value);
+  if (!dateTime || isNaN(price) || price <= 0) {
+    msgBox.textContent = "請填寫完整來店時間與價格，且價格必須大於0";
+    return;
+  }
+  let courseId = null;
+
+  // 優先使用課程選單的 id
+  if (reservationSelect.value) {
+  const selectedRes = reservations.find(r => r.idReservation === Number(reservationSelect.value));
+  if (selectedRes) {
+    // 用課程名去找課程ID
+    const course = courses.find(c => c.Course_name === selectedRes.Course_name);
+    if (course) {
+      courseId = course.idPriceList;
+    } else {
+      msgBox.textContent = "找不到預約對應的課程";
+      return;
+    }
+  }
+}
+
+  if (!courseId) {
+    msgBox.textContent = "請選擇課程或預約";
+    return;
+  }
+  if (!dateTime || isNaN(price)) {
+    msgBox.textContent = "請填寫完整來店時間與價格";
+    return;
+  }
+
+  try {
+    const res = await fetch('http://localhost:8000/api/2/insert-actual', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        customerId: Number(currentMemberId),
+        courseId: Number(courseId),
+        datetime: dateTime,
+        price: Number(price)
+      })
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success) {
+      alert("登記成功！");
+      // 清空表單與預約/課程選擇
+      reservationSelect.value = "";
+      courseSelect.value = "";
+      actualCourseName.value = "";
+      actualPrice.value = "";
+      setDefaultDateTime();
+    } else {
+      msgBox.textContent = "送出失敗：" + (data.error || "未知錯誤");
+    }
+  } catch (err) {
+    msgBox.textContent = "系統錯誤：" + err.message;
+  }
+});

@@ -1,0 +1,39 @@
+<h2>隔天預約清單</h2>
+<table id="reservationTable">
+  <thead>
+    <tr><th>客人姓名</th><th>電話</th><th>服務項目</th><th>預約時間</th><th>美容師</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  console.log('demoInsert4.html script loaded');
+  async function loadReservations() {
+    try {
+      const response = await fetch('http://localhost:8000/api/2/reservations-tomorrow');
+      const data = await response.json();
+      console.log(data);
+
+      const tbody = document.getElementById('reservationTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">明天沒有預約</td></tr>';
+        return;
+      }
+      data.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.CustomerName}</td>
+          <td>${r.Phone}</td>
+          <td>${r.CourseName}</td>
+          <td>${new Date(r.DateTime).toLocaleString()}</td>
+          <td>${r.Beautician}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (e) {
+      console.error('載入預約資料失敗', e);
+    }
+  }
+  loadReservations();
+</script>

@@ -67,7 +67,7 @@
   padding: 12px 18px;
   margin: 6px 16px;
   text-decoration: none;
-  background-color: #f8f3ef; /* 奶白 */
+  background-color: #f8f3ef;
   color: #5a3e36;
   border-radius: 10px;
   transition: all 0.2s ease;
@@ -76,6 +76,10 @@
   display: flex;
   align-items: center;
   gap: 8px;
+
+  /* 新增： */
+  line-height: 1.6;               /* 增加行高，文字不會擠 */
+  border-bottom: 1px solid #e0d4c5; /* 底部輕線條分隔 */
 }
 
 .sidebar a:hover {
@@ -172,6 +176,31 @@
         display: block;
       }
     }
+
+    table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: "Noto Serif TC", serif;
+  color: #5a3e36;
+}
+
+th, td {
+  padding: 10px 15px;
+  border: 1px solid #e0d4c5;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  background-color: #f5ede4;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #fbf6f2;
+}
+
   </style>
 </head>
 
@@ -182,10 +211,13 @@
     <h2>功能選單</h2>
     <a href="sidebar.html?target=courses-content.html">課程資訊</a>
     <a href="sidebar.html?target=promotion.html">多堂優惠</a>
-    <a href="sidebar.html?target=demoInsert.html">會員新增單</a>
-    <a href="sidebar.html?target=demoInsert2.html">產品新增單</a>
+    <a href="sidebar.html?target=demoInsert.html">會員新增</a>    
     <a href="sidebar.html?target=demoInsert3.html">預約表單</a>
+    <a href="sidebar.html?target=demoInsert5.html">查詢已預約資訊</a>
     <a href="sidebar.html?target=demoAPI2.html">🔍資料異動</a>
+    <a href="sidebar.html?target=demoInsert4.html">🔍隔天預約內容</a>
+    <a href="sidebar.html?target=demoInsert6.html">🔍實際來店</a>
+    <a href="sidebar.html?target=demoInsert2.html">🔍產品新增</a>
   </div>
 
   <div class="content" id="mainContent">

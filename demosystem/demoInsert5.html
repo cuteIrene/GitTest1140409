@@ -1,0 +1,61 @@
+<h2>查詢尚未到來的預約</h2>
+<form id="checkReservationForm">
+  <label>姓名：<input type="text" name="name" required></label><br><br>
+  <label>電話：<input type="tel" name="phone" required></label><br><br>
+  <button type="submit">查詢</button>
+</form>
+
+<div id="resultBox" style="margin-top: 20px;"></div>
+
+<script>
+document.getElementById('checkReservationForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = e.target.name.value.trim();
+  const phone = e.target.phone.value.trim();
+
+  const res = await fetch('http://localhost:8000/api/2/check-reservation', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, phone }),
+  });
+
+  const resultBox = document.getElementById('resultBox');
+  resultBox.innerHTML = ''; // 清空舊內容
+
+  if (res.ok) {
+    const data = await res.json();
+
+    if (Array.isArray(data) && data.length > 0) {
+      resultBox.innerHTML = `
+        <p>您尚未到來的預約如下：</p>
+        <table>
+          <thead>
+            <tr>
+              <th>預約時間</th>
+              <th>項目</th>
+              <th>美容師</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.map(d => `
+              <tr>
+                <td>${d.DateTime}</td>
+                <td>${d.Course_name}</td>
+                <td>${d.Beautician}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    } else {
+      resultBox.innerHTML = `<p>您目前沒有即將到來的預約，將為您導向預約頁面...</p>`;
+      setTimeout(() => {
+        window.location.href = 'sidebar.html?target=demoInsert3.html';
+      }, 2000);
+    }
+
+  } else {
+    resultBox.innerHTML = '<p style="color:red;">查詢失敗，請確認輸入是否正確。</p>';
+  }
+});
+</script>
