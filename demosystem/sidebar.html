@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>美好工作室系統</title>
-
   <style>
     * {
       box-sizing: border-box;
@@ -20,88 +19,63 @@
       color: #5a3e36;
     }
 
-    /* 🍑 溫柔 Sidebar */
+    /* Sidebar */
     .sidebar {
-  width: 240px;
-  background-color: #fceae8; /* 蜜桃粉 */
-  color: #5a3e36;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease-in-out;
-  border-right: 2px dashed #f8c8c4;
-  box-shadow: 2px 0 8px rgba(248, 200, 200, 0.2);
-}
+      width: 240px;
+      background-color: #f5ede4; /* 奶茶米色 */
+      color: #5a3e36;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease-in-out;
+      border-right: 1px solid #e0d4c5;
+      box-shadow: 2px 0 6px rgba(180, 150, 120, 0.1);
+    }
 
-.sidebar h2 {
-  text-align: center;
-  margin: 30px 0 15px;
-  font-size: 20px;
-  color: #d08080;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
+    .sidebar h2 {
+      text-align: center;
+      margin: 30px 0 15px;
+      font-size: 20px;
+      color: #7c5948;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
 
-/* 🌸 可愛少女風按鈕 */
-.sidebar {
-  width: 240px;
-  background-color: #f5ede4; /* 奶茶米色 */
-  color: #5a3e36;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease-in-out;
-  border-right: 1px solid #e0d4c5;
-  box-shadow: 2px 0 6px rgba(180, 150, 120, 0.1);
-}
+    .sidebar a {
+      padding: 12px 18px;
+      margin: 6px 16px;
+      text-decoration: none;
+      background-color: #f8f3ef;
+      color: #5a3e36;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(200, 180, 160, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.6;
+      border-bottom: 1px solid #e0d4c5;
+    }
 
-.sidebar h2 {
-  text-align: center;
-  margin: 30px 0 15px;
-  font-size: 20px;
-  color: #7c5948; /* 木質褐 */
-  font-weight: bold;
-  letter-spacing: 1px;
-}
+    .sidebar a:hover {
+      background: #ece1d6;
+      color: #a15d4c;
+      box-shadow: 0 2px 5px rgba(190, 160, 140, 0.2);
+      transform: translateX(3px);
+    }
 
-/* 🌿 柔色按鈕 */
-.sidebar a {
-  padding: 12px 18px;
-  margin: 6px 16px;
-  text-decoration: none;
-  background-color: #f8f3ef;
-  color: #5a3e36;
-  border-radius: 10px;
-  transition: all 0.2s ease;
-  font-weight: 500;
-  box-shadow: 0 1px 3px rgba(200, 180, 160, 0.1);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+    .hamburger {
+      display: none;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #a07664;
+      z-index: 10;
+    }
 
-  /* 新增： */
-  line-height: 1.6;               /* 增加行高，文字不會擠 */
-  border-bottom: 1px solid #e0d4c5; /* 底部輕線條分隔 */
-}
-
-.sidebar a:hover {
-  background: #ece1d6; /* 柔粉米 */
-  color: #a15d4c; /* 摩卡偏粉 */
-  box-shadow: 0 2px 5px rgba(190, 160, 140, 0.2);
-  transform: translateX(3px);
-}
-
-/* ☰ 漢堡按鈕（低彩柔和） */
-.hamburger {
-  display: none;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 24px;
-  background: none;
-  border: none;
-  color: #a07664;
-  z-index: 10;
-}
-    /* 📄 主內容區 */
     .content {
       flex: 1;
       padding: 40px 30px 60px;
@@ -123,7 +97,6 @@
       color: #5a3e36;
     }
 
-    /* 🖼️ 圖片區 */
     .centered {
       text-align: center;
     }
@@ -146,20 +119,7 @@
       transform: scale(1.03);
     }
 
-    /* ☰ 漢堡按鈕 */
-    .hamburger {
-      display: none;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: #8d5a4d;
-      z-index: 10;
-    }
-
-    /* 📱 手機版響應 */
+    /* RWD */
     @media (max-width: 768px) {
       .sidebar {
         position: fixed;
@@ -178,29 +138,67 @@
     }
 
     table {
-  border-collapse: collapse;
-  width: 100%;
-  font-family: "Noto Serif TC", serif;
-  color: #5a3e36;
-}
+      border-collapse: collapse;
+      width: 100%;
+      font-family: "Noto Serif TC", serif;
+      color: #5a3e36;
+    }
 
-th, td {
-  padding: 10px 15px;
-  border: 1px solid #e0d4c5;
-  text-align: left;
-  vertical-align: middle;
-}
+    th, td {
+      padding: 10px 15px;
+      border: 1px solid #e0d4c5;
+      text-align: left;
+      vertical-align: middle;
+    }
 
-th {
-  background-color: #f5ede4;
-  font-weight: 700;
-  font-size: 16px;
-}
+    th {
+      background-color: #f5ede4;
+      font-weight: 700;
+      font-size: 16px;
+    }
 
-tbody tr:nth-child(even) {
-  background-color: #fbf6f2;
-}
+    tbody tr:nth-child(even) {
+      background-color: #fbf6f2;
+    }
 
+    /* 🌸 美編加強區塊 */
+    .section {
+      background-color: #fdf7f2;
+      border: 1px solid #e6d5c9;
+      border-radius: 12px;
+      padding: 30px 20px;
+      margin: 30px auto;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(220, 180, 160, 0.08);
+    }
+
+    .section h3 {
+      font-size: 20px;
+      color: #8d5a4d;
+      margin-bottom: 18px;
+      font-weight: bold;
+    }
+
+    .section img {
+      width: 200px;
+      height: auto;
+      margin: 12px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(160, 120, 100, 0.1);
+    }
+
+    .section a {
+      text-decoration: none;
+      color: #a76c5d;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .section a:hover {
+      color: #d08070;
+      text-decoration: underline;
+    }
   </style>
 </head>
 
@@ -208,7 +206,7 @@ tbody tr:nth-child(even) {
   <button class="hamburger" onclick="toggleSidebar()">☰</button>
 
   <div class="sidebar" id="sidebar">
-    <h2>功能選單</h2>
+    <h2>美好的選擇</h2>
     <a href="sidebar.html?target=courses-content.html">課程資訊</a>
     <a href="sidebar.html?target=promotion.html">多堂優惠</a>
     <a href="sidebar.html?target=demoInsert.html">會員新增</a>    
@@ -224,6 +222,27 @@ tbody tr:nth-child(even) {
   <div class="content" id="mainContent">
     <h1>歡迎來到美好工作室</h1>
     <p>請從左側選單選擇功能</p>
+
+    <div class="section booking">
+      <h3>掃描 QR code 加入官方 LINE</h3>
+      <img src="https://qr-official.line.me/gs/M_394caevk_GW.png?ts=10311926&amp;oat_content=url" alt="Line QR Code">
+      <p>
+        <a href="https://qr-official.line.me/gs/M_394caevk_GW.png?ts=10311926&amp;oat_content=url">
+          點我加入美好工作室 LINE 官方帳號
+        </a>
+      </p>
+      <p style="font-size: 14px; color: #7c5a50;">預約、活動優惠都會在這裡公告唷～</p>
+    </div>
+
+    <div class="section location">
+      <h3>地址資訊</h3>
+      <p>
+        <a href="https://maps.app.goo.gl/74aUbaNAE48yKMCY6" target="_blank">
+          點我查看 Google Map 導航
+        </a>
+      </p>
+      <p style="color: #5a3e36; font-size: 14px;">台北市大安區羅斯福路三段17巷口（近古亭捷運站）</p>
+    </div>
   </div>
 
   <script>
@@ -247,17 +266,14 @@ tbody tr:nth-child(even) {
         const content = document.getElementById('mainContent');
         content.innerHTML = '';
 
-        // 移除舊 script（標記為 data-dynamic 的）
         document.querySelectorAll('script[data-dynamic]').forEach(s => s.remove());
 
-        // 插入非 script 元素
         Array.from(doc.body.childNodes).forEach(node => {
           if (node.tagName !== 'SCRIPT') {
             content.appendChild(document.importNode(node, true));
           }
         });
 
-        // 插入 script
         const scripts = doc.querySelectorAll('script');
         scripts.forEach(oldScript => {
           const newScript = document.createElement('script');
@@ -270,7 +286,7 @@ tbody tr:nth-child(even) {
           content.appendChild(newScript);
         });
 
-        if (window.innerWidth <= 768) toggleSidebar(); // 手機收 sidebar
+        if (window.innerWidth <= 768) toggleSidebar();
       } catch (err) {
         document.getElementById('mainContent').innerHTML =
           `<p style="color:red;">⚠ 無法載入 ${fileName}：${err.message}</p>`;
