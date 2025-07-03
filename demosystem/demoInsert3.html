@@ -75,7 +75,7 @@
       const phone = document.getElementById("phone").value.trim();
 
       try {
-        const response = await fetch("http://localhost:8000/check-member", {
+        const response = await fetch("https://my-backend-production-343a.up.railway.app/check-member", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, phone })
@@ -102,13 +102,13 @@
     });
 
     async function loadCourseList() {
-      const res = await fetch("http://localhost:8000/api/1/products");
+      const res = await fetch("https://my-backend-production-343a.up.railway.app/api/1/products");
       if (!res.ok) throw new Error("無法取得服務清單");
       courseList = await res.json();
     }
 
     async function loadEmployeeList() {
-      const res = await fetch("http://localhost:8000/api/1/beautician");
+      const res = await fetch("https://my-backend-production-343a.up.railway.app/api/1/beautician");
       if (!res.ok) throw new Error("無法取得美容師清單");
       employeeList = await res.json();
     }
@@ -170,7 +170,7 @@
       };
 
       try {
-        const response = await fetch("http://localhost:8000/api/2/insert", {
+        const response = await fetch("https://my-backend-production-343a.up.railway.app/api/2/insert", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(reservationData)

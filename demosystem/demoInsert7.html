@@ -19,7 +19,7 @@
       return;
     }
 
-    fetch("http://localhost:8000/api/2/check-session", {
+    fetch("https://my-backend-production-343a.up.railway.app/api/2/check-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, phone })

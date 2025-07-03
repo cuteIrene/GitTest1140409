@@ -13,7 +13,7 @@ document.getElementById('checkReservationForm').addEventListener('submit', async
   const name = e.target.name.value.trim();
   const phone = e.target.phone.value.trim();
 
-  const res = await fetch('http://localhost:8000/api/2/check-reservation', {
+  const res = await fetch('https://my-backend-production-343a.up.railway.app/api/2/check-reservation', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, phone }),

@@ -76,7 +76,7 @@ function setDefaultDateTime() {
 // 讀取課程列表
 async function loadCourses() {
   try {
-    const res = await fetch('http://localhost:8000/api/1/products');
+    const res = await fetch('https://my-backend-production-343a.up.railway.app/api/1/products');
     if (!res.ok) throw new Error('讀取課程失敗');
     courses = await res.json();
     courseSelect.innerHTML = '<option value="">-- 請選擇課程 --</option>';
@@ -143,7 +143,7 @@ document.getElementById('searchMemberForm').addEventListener('submit', async e =
 
   try {
     // 查會員
-    let res = await fetch('http://localhost:8000/check-member', {
+    let res = await fetch('https://my-backend-production-343a.up.railway.app/check-member', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({name, phone})
@@ -160,7 +160,7 @@ document.getElementById('searchMemberForm').addEventListener('submit', async e =
     await loadCourses();
 
     // 查預約
-    res = await fetch('http://localhost:8000/api/2/check-reservation', {
+    res = await fetch('https://my-backend-production-343a.up.railway.app/api/2/check-reservation', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({name, phone})
@@ -196,7 +196,7 @@ document.getElementById('addMemberForm').addEventListener('submit', async e => {
   const phone = form.phone.value.trim();
 
   try {
-    let res = await fetch('http://localhost:8000/api/2/insert-member', {  // 假設你有新增會員API
+    let res = await fetch('https://my-backend-production-343a.up.railway.app/api/2/insert-member', {  // 假設你有新增會員API
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({name, phone})
@@ -263,7 +263,7 @@ document.getElementById('actualForm').addEventListener('submit', async e => {
   }
 
   try {
-    const res = await fetch('http://localhost:8000/api/2/insert-actual', {
+    const res = await fetch('https://my-backend-production-343a.up.railway.app/api/2/insert-actual', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({

@@ -10,7 +10,7 @@
   console.log('demoInsert4.html script loaded');
   async function loadReservations() {
     try {
-      const response = await fetch('http://localhost:8000/api/2/reservations-tomorrow');
+      const response = await fetch('https://my-backend-production-343a.up.railway.app/api/2/reservations-tomorrow');
       const data = await response.json();
       console.log(data);
 

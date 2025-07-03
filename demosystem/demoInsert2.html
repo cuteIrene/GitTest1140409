@@ -17,12 +17,12 @@
   <button onclick="insertpost()">新增</button>
   <script>
 
-    const apiCustomer = 'http://localhost:8000/api/1/customers';
-    const apiReserve = 'http://localhost:8000/api/1/orders';
-    const apiProducts = 'http://localhost:8000/api/1/products';
-    const apiPromote = 'http://localhost:8000/api/1/promote';
-    const apiCome = 'http://localhost:8000/api/1/come';
-    const apiBeautician = 'http://localhost:8000/api/1/beautician';
+    const apiCustomer = 'https://my-backend-production-343a.up.railway.app/api/1/customers';
+    const apiReserve = 'https://my-backend-production-343a.up.railway.app/api/1/orders';
+    const apiProducts = 'https://my-backend-production-343a.up.railway.app/api/1/products';
+    const apiPromote = 'https://my-backend-production-343a.up.railway.app/api/1/promote';
+    const apiCome = 'https://my-backend-production-343a.up.railway.app/api/1/come';
+    const apiBeautician = 'https://my-backend-production-343a.up.railway.app/api/1/beautician';
     const cname = document.getElementById("cname");
     const pname = document.getElementById("pname");
     const sname = document.getElementById("sname");
@@ -52,7 +52,7 @@
       let remark = document.getElementById("remark").value;
       if (pname) {
         //格式檢查
-        fetch('http://localhost:8000/api/2/insert', {
+        fetch('https://my-backend-production-343a.up.railway.app/api/2/insert', {
           method: 'POST',
           mode: 'cors', // ✅ 很關鍵
           body: JSON.stringify({table:"pricelist", pname: pname, time:time, price:price})
